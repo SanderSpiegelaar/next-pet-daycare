@@ -6,6 +6,7 @@ import PetContextProvider from "@/contexts/pet-context-provider"
 import SearchContextProvider from "@/contexts/search-context-provider"
 import { Pet } from "@/lib/types"
 import db from "@/lib/db"
+import { Toaster } from "@/components/ui/sonner"
 
 interface Props {
 	children: React.ReactNode
@@ -24,6 +25,7 @@ export default async function AppLayout({ children }: Props) {
 				</SearchContextProvider>
 				<AppFooter />
 			</div>
+			<Toaster />
 		</>
 	)
 }

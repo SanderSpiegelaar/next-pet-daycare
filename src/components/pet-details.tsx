@@ -1,17 +1,18 @@
 "use client"
 
 import { usePetContext } from "@/lib/hooks"
-import { Pet } from "@/lib/types"
+import { Pet } from "@prisma/client"
 import Image from "next/image"
-import React from "react"
+import React, { useTransition } from "react"
 import PetButton from "./pet-button"
+import { deletePet } from "@/actions/actions"
 
 type Props = {
 	pet: Pet
 }
 
 export default function PetDetails() {
-	const { selectedPet } = usePetContext()
+	const { selectedPet, handleCheckoutPet } = usePetContext()
 	return (
 		<section className="flex h-full w-full flex-col">
 			{!selectedPet ?
@@ -36,9 +37,10 @@ function EmptyView() {
 
 function TopBar({ pet }: Props) {
 	const { handleCheckoutPet } = usePetContext()
+	const [isPending, startTransition] = useTransition()
 
 	return (
-		<div className="border-light flex items-center border-b bg-white px-8 py-5">
+		<div className="flex items-center border-b border-light bg-white px-8 py-5">
 			<Image
 				src={pet?.imageUrl}
 				alt="Selected pet image"
@@ -52,7 +54,7 @@ function TopBar({ pet }: Props) {
 				<PetButton actionType="edit">Edit</PetButton>
 				<PetButton
 					actionType="checkout"
-					onClick={() => handleCheckoutPet(pet.id)}>
+					onClick={async () => await handleCheckoutPet(pet?.id)}>
 					Checkout
 				</PetButton>
 			</div>
@@ -79,7 +81,7 @@ function PetInfo({ pet }: Props) {
 
 function PetNotes({ pet }: Props) {
 	return (
-		<div className="border-light mx-8 mb-9 flex-1 rounded-md border bg-white px-7 py-5">
+		<div className="mx-8 mb-9 flex-1 rounded-md border border-light bg-white px-7 py-5">
 			{pet?.notes}
 		</div>
 	)
